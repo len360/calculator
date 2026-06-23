@@ -9,7 +9,7 @@ export interface Problem {
   isDecimal: boolean
 }
 
-export function useExercise(generateFn: () => Problem) {
+export function useExercise(generateFn: () => Problem, getDecimals?: () => number) {
   const problem = ref<Problem>(generateFn())
   const userAnswer = ref('')
   const isAnswered = ref(false)
@@ -17,21 +17,23 @@ export function useExercise(generateFn: () => Problem) {
   const score = ref(0)
   const total = ref(0)
 
+  const decimals = computed(() => getDecimals ? getDecimals() : 2)
+
   const formattedOperandA = computed(() => {
     return problem.value.isDecimal
-      ? problem.value.operandA.toFixed(2).replace('.', ',')
+      ? problem.value.operandA.toFixed(decimals.value).replace('.', ',')
       : problem.value.operandA.toString()
   })
 
   const formattedOperandB = computed(() => {
     return problem.value.isDecimal
-      ? problem.value.operandB.toFixed(2).replace('.', ',')
+      ? problem.value.operandB.toFixed(decimals.value).replace('.', ',')
       : problem.value.operandB.toString()
   })
 
   const formattedCorrectAnswer = computed(() => {
     return problem.value.isDecimal
-      ? problem.value.correctAnswer.toFixed(2).replace('.', ',')
+      ? problem.value.correctAnswer.toFixed(decimals.value).replace('.', ',')
       : problem.value.correctAnswer.toString()
   })
 
@@ -48,9 +50,10 @@ export function useExercise(generateFn: () => Problem) {
     isAnswered.value = true
 
     if (problem.value.isDecimal) {
-      // For decimals, round both to 2 decimal places and compare
+      // For decimals, round both to the configured decimal places and compare
+      const factor = Math.pow(10, decimals.value)
       isCorrect.value =
-        Math.round(parsed * 100) === Math.round(problem.value.correctAnswer * 100)
+        Math.round(parsed * factor) === Math.round(problem.value.correctAnswer * factor)
     } else {
       isCorrect.value = parsed === problem.value.correctAnswer
     }
@@ -81,3 +84,4 @@ export function useExercise(generateFn: () => Problem) {
     nextProblem,
   }
 }
+

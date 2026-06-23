@@ -1,18 +1,25 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ExerciseLayout from '@/components/ExerciseLayout.vue'
 import { useExercise, type Problem } from '@/composables/useExercise'
 import type { HelpTip } from '@/components/HelpDrawer.vue'
 
+// Reactive settings
+const rangeMin = ref(10)
+const rangeMax = ref(10000)
+const decimals = ref(2)
+
 function generateAddition(): Problem {
-  // Nombres décimaux entre 10.00 et 10000.00
-  const a = Math.round((Math.random() * 9990 + 10) * 100) / 100
-  const b = Math.round((Math.random() * 9990 + 10) * 100) / 100
+  const factor = Math.pow(10, decimals.value)
+  const range = rangeMax.value - rangeMin.value
+  const a = Math.round((Math.random() * range + rangeMin.value) * factor) / factor
+  const b = Math.round((Math.random() * range + rangeMin.value) * factor) / factor
   return {
     operandA: a,
     operandB: b,
     operator: '+',
-    correctAnswer: Math.round((a + b) * 100) / 100,
-    isDecimal: true,
+    correctAnswer: Math.round((a + b) * factor) / factor,
+    isDecimal: decimals.value > 0,
   }
 }
 
@@ -55,7 +62,7 @@ const {
   formattedCorrectAnswer,
   checkAnswer,
   nextProblem,
-} = useExercise(generateAddition)
+} = useExercise(generateAddition, () => decimals.value)
 </script>
 
 <template>
@@ -70,10 +77,18 @@ const {
     :is-correct="isCorrect"
     :score="score"
     :total="total"
-    input-mode="decimal"
+    :input-mode="decimals > 0 ? 'decimal' : 'numeric'"
     :help-tips="helpTips"
+    has-options
+    :option-min="rangeMin"
+    :option-max="rangeMax"
+    :option-decimals="decimals"
+    @update:option-min="rangeMin = $event"
+    @update:option-max="rangeMax = $event"
+    @update:option-decimals="decimals = $event"
     @check="checkAnswer"
     @next="nextProblem"
   />
 </template>
+
 

@@ -3,6 +3,7 @@ import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import HelpDrawer from '@/components/HelpDrawer.vue'
 import type { HelpTip } from '@/components/HelpDrawer.vue'
+import OptionsDrawer from '@/components/OptionsDrawer.vue'
 
 const props = defineProps<{
   title: string
@@ -17,12 +18,19 @@ const props = defineProps<{
   total: number
   inputMode?: string
   helpTips?: HelpTip[]
+  hasOptions?: boolean
+  optionMin?: number
+  optionMax?: number
+  optionDecimals?: number
 }>()
 
 const emit = defineEmits<{
   'update:userAnswer': [value: string]
   'check': []
   'next': []
+  'update:optionMin': [value: number]
+  'update:optionMax': [value: number]
+  'update:optionDecimals': [value: number]
 }>()
 
 const router = useRouter()
@@ -30,6 +38,7 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const showFeedback = ref(false)
 const shakeInput = ref(false)
 const showHelp = ref(false)
+const showOptions = ref(false)
 
 function handleCheck() {
   emit('check')
@@ -88,6 +97,17 @@ onMounted(() => {
         {{ title }}
       </h1>
       <div class="flex items-center gap-3">
+        <button
+          v-if="hasOptions"
+          @click="showOptions = true"
+          class="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/15 transition-all duration-200 cursor-pointer"
+          aria-label="Options"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
         <button
           v-if="helpTips && helpTips.length"
           @click="showHelp = true"
@@ -199,6 +219,20 @@ onMounted(() => {
       @update:open="showHelp = $event"
       :tips="helpTips"
       :operation-name="title"
+    />
+
+    <!-- Options Drawer -->
+    <OptionsDrawer
+      v-if="hasOptions"
+      :open="showOptions"
+      @update:open="showOptions = $event"
+      :min="optionMin ?? 10"
+      :max="optionMax ?? 10000"
+      :decimals="optionDecimals ?? 2"
+      :operation-name="title"
+      @update:min="emit('update:optionMin', $event)"
+      @update:max="emit('update:optionMax', $event)"
+      @update:decimals="emit('update:optionDecimals', $event)"
     />
   </div>
 </template>
