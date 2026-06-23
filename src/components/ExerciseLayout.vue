@@ -4,10 +4,6 @@ import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   title: string
-  emoji: string
-  accentColor: string
-  accentLight: string
-  accentDark: string
   operandA: string
   operandB: string
   operator: string
@@ -33,7 +29,6 @@ const shakeInput = ref(false)
 
 function handleCheck() {
   emit('check')
-  // Trigger feedback animation on next tick
   setTimeout(() => {
     showFeedback.value = true
     if (!props.isCorrect) {
@@ -71,135 +66,114 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-dvh flex flex-col">
+  <div class="min-h-dvh flex flex-col bg-surface">
     <!-- Header -->
     <header
-      class="px-5 py-4 flex items-center justify-between shadow-sm"
-      :style="{ backgroundColor: accentColor }"
+      class="h-15 px-5 flex items-center justify-between bg-primary"
     >
       <button
         @click="goHome"
-        class="flex items-center gap-2 text-white/90 hover:text-white transition-colors text-lg font-medium"
+        class="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-lg font-medium cursor-pointer"
         aria-label="Retour à l'accueil"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        Accueil
       </button>
-      <h1 class="text-xl font-bold text-white flex items-center gap-2">
-        <span class="text-2xl">{{ emoji }}</span>
+      <h1 class="text-2xl font-bold text-white">
         {{ title }}
       </h1>
-      <div class="text-white/90 font-semibold text-lg tabular-nums">
+      <div class="text-white/80 font-semibold text-lg tabular-nums">
         {{ score }}/{{ total }}
       </div>
     </header>
 
-    <!-- Main content -->
-    <main class="flex-1 flex flex-col items-center justify-center px-5 py-8 gap-8">
-      <!-- Calcul affiché -->
-      <div class="w-full max-w-lg bg-white rounded-3xl shadow-lg p-8 flex flex-col items-center gap-6">
-        <!-- Expression -->
-        <div class="flex items-baseline gap-3 flex-wrap justify-center">
-          <span class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-text-primary tabular-nums">
-            {{ operandA }}
-          </span>
-          <span
-            class="text-4xl sm:text-5xl md:text-6xl font-bold"
-            :style="{ color: accentColor }"
-          >
-            {{ operator }}
-          </span>
-          <span class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-text-primary tabular-nums">
-            {{ operandB }}
-          </span>
-        </div>
-
-        <!-- Séparateur -->
-        <div class="w-full h-px bg-gray-200"></div>
-
-        <!-- Zone de saisie -->
-        <div class="w-full flex flex-col items-center gap-4">
-          <label class="text-xl text-text-secondary font-medium">Votre réponse</label>
-          <div class="relative w-full max-w-xs">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-bold text-text-secondary">=</span>
-            <input
-              ref="inputRef"
-              type="text"
-              :inputmode="inputMode || 'numeric'"
-              :value="userAnswer"
-              @input="emit('update:userAnswer', ($event.target as HTMLInputElement).value)"
-              @keydown="handleKeydown"
-              :disabled="isAnswered"
-              :class="[
-                'w-full pl-12 pr-4 py-4 text-4xl font-bold text-center rounded-2xl border-3 outline-none transition-all duration-200 tabular-nums',
-                shakeInput ? 'animate-shake' : '',
-                isAnswered && isCorrect
-                  ? 'border-success bg-success-light text-success'
-                  : isAnswered && !isCorrect
-                    ? 'border-error bg-error-light text-error'
-                    : 'border-gray-300 focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-ring)]'
-              ]"
-              :style="{
-                '--accent': accentColor,
-                '--accent-ring': accentLight,
-              } as Record<string, string>"
-              placeholder="?"
-              autocomplete="off"
-              aria-label="Saisissez votre réponse"
-            />
-          </div>
-        </div>
-
-        <!-- Feedback -->
-        <Transition name="page">
-          <div v-if="isAnswered && showFeedback" class="w-full animate-pop-in">
-            <div
-              :class="[
-                'flex items-center justify-center gap-3 py-4 px-6 rounded-2xl text-xl font-semibold',
-                isCorrect
-                  ? 'bg-success-light text-success'
-                  : 'bg-error-light text-error'
-              ]"
-            >
-              <span class="text-3xl">{{ isCorrect ? '✅' : '❌' }}</span>
-              <span v-if="isCorrect">Bravo, c'est correct !</span>
-              <span v-else>
-                La bonne réponse était <strong class="ml-1">{{ correctAnswer }}</strong>
-              </span>
-            </div>
-          </div>
-        </Transition>
+    <!-- Calculation — centered in the remaining space -->
+    <main class="flex-1 flex flex-col items-center justify-center px-5">
+      <!-- Expression -->
+      <div class="flex items-baseline gap-3 flex-wrap justify-center">
+        <span class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-text-primary tabular-nums">
+          {{ operandA }}
+        </span>
+        <span class="text-4xl sm:text-5xl md:text-6xl font-bold text-primary">
+          {{ operator }}
+        </span>
+        <span class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-text-primary tabular-nums">
+          {{ operandB }}
+        </span>
       </div>
 
-      <!-- Boutons d'action -->
-      <div class="w-full max-w-lg flex flex-col gap-3">
+      <!-- Feedback -->
+      <Transition name="page">
+        <div v-if="isAnswered && showFeedback" class="mt-8 animate-pop-in">
+          <div
+            :class="[
+              'flex items-center justify-center gap-3 py-3 px-6 rounded-xl text-lg font-semibold',
+              isCorrect
+                ? 'bg-success-light text-success'
+                : 'bg-error-light text-error'
+            ]"
+          >
+            <span v-if="isCorrect">Correct</span>
+            <span v-else>
+              Réponse : <strong class="ml-1">{{ correctAnswer }}</strong>
+            </span>
+          </div>
+        </div>
+      </Transition>
+    </main>
+
+    <!-- Input bar — pinned at bottom -->
+    <footer class="px-5 pb-6 pt-4 bg-surface">
+      <div class="w-full max-w-lg mx-auto flex flex-col gap-3">
+        <!-- Input field -->
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-text-secondary">=</span>
+          <input
+            ref="inputRef"
+            type="text"
+            :inputmode="inputMode || 'numeric'"
+            :value="userAnswer"
+            @input="emit('update:userAnswer', ($event.target as HTMLInputElement).value)"
+            @keydown="handleKeydown"
+            :disabled="isAnswered"
+            :class="[
+              'w-full pl-12 pr-4 py-4 text-3xl font-bold text-center rounded-2xl border-2 outline-none transition-all duration-200 tabular-nums bg-surface-card',
+              shakeInput ? 'animate-shake' : '',
+              isAnswered && isCorrect
+                ? 'border-success bg-success-light text-success'
+                : isAnswered && !isCorrect
+                  ? 'border-error bg-error-light text-error'
+                  : 'border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/15'
+            ]"
+            placeholder="?"
+            autocomplete="off"
+            aria-label="Saisissez votre réponse"
+          />
+        </div>
+
+        <!-- Action button -->
         <button
           v-if="!isAnswered"
           @click="handleCheck"
           :disabled="userAnswer.trim() === ''"
           :class="[
-            'w-full py-5 rounded-2xl text-2xl font-bold text-white shadow-lg transition-all duration-200',
+            'w-full py-4 rounded-2xl text-xl font-bold text-white transition-all duration-200 bg-primary',
             userAnswer.trim() === ''
               ? 'opacity-40 cursor-not-allowed'
-              : 'hover:shadow-xl active:scale-[0.98] cursor-pointer'
+              : 'hover:bg-primary-dark active:scale-[0.98] cursor-pointer'
           ]"
-          :style="{
-            backgroundColor: userAnswer.trim() === '' ? accentColor : accentColor,
-          }"
         >
           Valider
         </button>
         <button
           v-else
           @click="handleNext"
-          class="w-full py-5 rounded-2xl text-2xl font-bold text-white shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-200 cursor-pointer"
-          :style="{ backgroundColor: accentDark }"
+          class="w-full py-4 rounded-2xl text-xl font-bold text-white bg-primary-dark hover:bg-primary active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
-          Calcul suivant →
+          Suivant
         </button>
       </div>
-    </main>
+    </footer>
   </div>
 </template>

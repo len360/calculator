@@ -32,10 +32,6 @@ const {
 <template>
   <ExerciseLayout
     title="Multiplication"
-    emoji="✖️"
-    accent-color="var(--color-multiplication)"
-    accent-light="var(--color-multiplication-light)"
-    accent-dark="var(--color-multiplication-dark)"
     :operand-a="formattedOperandA"
     :operand-b="formattedOperandB"
     operator="×"

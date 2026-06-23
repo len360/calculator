@@ -34,10 +34,6 @@ const {
 <template>
   <ExerciseLayout
     title="Division"
-    emoji="➗"
-    accent-color="var(--color-division)"
-    accent-light="var(--color-division-light)"
-    accent-dark="var(--color-division-dark)"
     :operand-a="formattedOperandA"
     :operand-b="formattedOperandB"
     operator="÷"

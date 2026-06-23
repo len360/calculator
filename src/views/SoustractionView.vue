@@ -38,10 +38,6 @@ const {
 <template>
   <ExerciseLayout
     title="Soustraction"
-    emoji="➖"
-    accent-color="var(--color-soustraction)"
-    accent-light="var(--color-soustraction-light)"
-    accent-dark="var(--color-soustraction-dark)"
     :operand-a="formattedOperandA"
     :operand-b="formattedOperandB"
     operator="−"
