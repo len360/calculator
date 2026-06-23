@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import HelpDrawer from '@/components/HelpDrawer.vue'
+import type { HelpTip } from '@/components/HelpDrawer.vue'
 
 const props = defineProps<{
   title: string
@@ -14,6 +16,7 @@ const props = defineProps<{
   score: number
   total: number
   inputMode?: string
+  helpTips?: HelpTip[]
 }>()
 
 const emit = defineEmits<{
@@ -26,6 +29,7 @@ const router = useRouter()
 const inputRef = ref<HTMLInputElement | null>(null)
 const showFeedback = ref(false)
 const shakeInput = ref(false)
+const showHelp = ref(false)
 
 function handleCheck() {
   emit('check')
@@ -69,7 +73,7 @@ onMounted(() => {
   <div class="min-h-dvh flex flex-col bg-surface">
     <!-- Header -->
     <header
-      class="h-15 px-5 flex items-center justify-between bg-primary"
+      class="py-5 px-4 flex items-center justify-between bg-primary"
     >
       <button
         @click="goHome"
@@ -83,8 +87,20 @@ onMounted(() => {
       <h1 class="text-2xl font-bold text-white">
         {{ title }}
       </h1>
-      <div class="text-white/80 font-semibold text-lg tabular-nums">
-        {{ score }}/{{ total }}
+      <div class="flex items-center gap-3">
+        <button
+          v-if="helpTips && helpTips.length"
+          @click="showHelp = true"
+          class="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/15 transition-all duration-200 cursor-pointer"
+          aria-label="Afficher les astuces"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </button>
+        <div class="text-white/80 font-semibold text-lg tabular-nums">
+          {{ score }}/{{ total }}
+        </div>
       </div>
     </header>
 
@@ -175,5 +191,14 @@ onMounted(() => {
         </button>
       </div>
     </footer>
+
+    <!-- Help Drawer -->
+    <HelpDrawer
+      v-if="helpTips && helpTips.length"
+      :open="showHelp"
+      @update:open="showHelp = $event"
+      :tips="helpTips"
+      :operation-name="title"
+    />
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ExerciseLayout from '@/components/ExerciseLayout.vue'
 import { useExercise, type Problem } from '@/composables/useExercise'
+import type { HelpTip } from '@/components/HelpDrawer.vue'
 
 function generateSoustraction(): Problem {
   // Nombres décimaux entre 10.00 et 10000.00, avec A >= B
@@ -20,6 +21,34 @@ function generateSoustraction(): Problem {
     isDecimal: true,
   }
 }
+
+const helpTips: HelpTip[] = [
+  {
+    title: 'Arrondir puis compenser',
+    description: 'Arrondissez le nombre à soustraire, effectuez le calcul, puis ajustez le résultat.',
+    example: '543 − 198 → 543 − 200 + 2 = <strong>345</strong>',
+  },
+  {
+    title: 'Soustraire en ajoutant',
+    description: 'Au lieu de soustraire, demandez-vous combien il faut ajouter au petit nombre pour arriver au grand.',
+    example: '82 − 57 → 57 + ? = 82 → 57 + 3 = 60, 60 + 22 = 82 → <strong>25</strong>',
+  },
+  {
+    title: 'Décomposer le nombre à soustraire',
+    description: 'Décomposez le nombre à enlever en morceaux faciles et soustrayez étape par étape.',
+    example: '735 − 268 → 735 − 200 = 535, 535 − 60 = 475, 475 − 8 = <strong>467</strong>',
+  },
+  {
+    title: 'Traiter les décimales à part',
+    description: 'Séparez les parties entières et décimales, puis soustrayez-les indépendamment.',
+    example: '45.80 − 12.35 → (45−12) + (0.80−0.35) = 33 + 0.45 = <strong>33.45</strong>',
+  },
+  {
+    title: 'Ajouter la même valeur aux deux nombres',
+    description: 'La différence reste identique si vous ajoutez (ou ôtez) le même montant aux deux opérandes.',
+    example: '83 − 47 → 86 − 50 = <strong>36</strong>',
+  },
+]
 
 const {
   userAnswer,
@@ -48,7 +77,9 @@ const {
     :score="score"
     :total="total"
     input-mode="decimal"
+    :help-tips="helpTips"
     @check="checkAnswer"
     @next="nextProblem"
   />
 </template>
+
