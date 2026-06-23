@@ -17,6 +17,9 @@ export function useExercise(generateFn: () => Problem, getDecimals?: () => numbe
   const score = ref(0)
   const total = ref(0)
 
+  const hasAttempted = ref(false)
+  const hasFailed = ref(false)
+
   const decimals = computed(() => getDecimals ? getDecimals() : 2)
 
   const formattedOperandA = computed(() => {
@@ -46,8 +49,10 @@ export function useExercise(generateFn: () => Problem, getDecimals?: () => numbe
 
     if (isNaN(parsed)) return
 
-    total.value++
-    isAnswered.value = true
+    if (!hasAttempted.value) {
+      total.value++
+      hasAttempted.value = true
+    }
 
     if (problem.value.isDecimal) {
       // For decimals, round both to the configured decimal places and compare
@@ -59,7 +64,12 @@ export function useExercise(generateFn: () => Problem, getDecimals?: () => numbe
     }
 
     if (isCorrect.value) {
-      score.value++
+      isAnswered.value = true
+      if (!hasFailed.value) {
+        score.value++
+      }
+    } else {
+      hasFailed.value = true
     }
   }
 
@@ -68,6 +78,8 @@ export function useExercise(generateFn: () => Problem, getDecimals?: () => numbe
     userAnswer.value = ''
     isAnswered.value = false
     isCorrect.value = false
+    hasAttempted.value = false
+    hasFailed.value = false
   }
 
   return {

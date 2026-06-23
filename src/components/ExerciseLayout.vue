@@ -142,18 +142,8 @@ onMounted(() => {
       <!-- Feedback -->
       <Transition name="page">
         <div v-if="isAnswered && showFeedback" class="mt-8 animate-pop-in">
-          <div
-            :class="[
-              'flex items-center justify-center gap-3 py-3 px-6 rounded-xl text-lg font-semibold',
-              isCorrect
-                ? 'bg-success-light text-success'
-                : 'bg-error-light text-error'
-            ]"
-          >
-            <span v-if="isCorrect">Correct</span>
-            <span v-else>
-              Réponse : <strong class="ml-1">{{ correctAnswer }}</strong>
-            </span>
+          <div class="flex items-center justify-center gap-3 py-3 px-6 rounded-xl text-lg font-semibold bg-success-light text-success">
+            <span>Correct</span>
           </div>
         </div>
       </Transition>
@@ -175,12 +165,12 @@ onMounted(() => {
             :disabled="isAnswered"
             :class="[
               'w-full pl-12 pr-4 py-4 text-3xl font-bold text-center rounded-2xl border-2 outline-none transition-all duration-200 tabular-nums bg-surface-card',
-              shakeInput ? 'animate-shake' : '',
-              isAnswered && isCorrect
+              shakeInput ? 'animate-shake border-error bg-error-light text-error' : '',
+              isAnswered
                 ? 'border-success bg-success-light text-success'
-                : isAnswered && !isCorrect
-                  ? 'border-error bg-error-light text-error'
-                  : 'border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/15'
+                : !shakeInput
+                  ? 'border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/15'
+                  : ''
             ]"
             placeholder="?"
             autocomplete="off"
