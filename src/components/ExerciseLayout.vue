@@ -16,7 +16,16 @@ const props = defineProps<{
   isCorrect: boolean
   score: number
   total: number
-  inputMode?: string
+  inputMode?:
+    | 'text'
+    | 'none'
+    | 'email'
+    | 'search'
+    | 'tel'
+    | 'url'
+    | 'numeric'
+    | 'decimal'
+    | undefined
   helpTips?: HelpTip[]
   hasOptions?: boolean
   optionMin?: number
