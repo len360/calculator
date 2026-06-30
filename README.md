@@ -1,48 +1,16 @@
-# vue-project
+# Calcul Mental
 
-This template should help get you started developing with Vue 3 in Vite.
+## Objectif du projet
 
-## Recommended IDE Setup
+Ce projet est une application web interactive dédiée à l'entraînement au calcul mental. Son but principal est de fournir un environnement simple, rapide et efficace pour pratiquer différentes opérations mathématiques et ainsi améliorer son agilité mentale au quotidien.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Fonctionnement général
 
-## Recommended Browser Setup
+L'application propose une interface utilisateur intuitive où l'utilisateur peut choisir son type d'exercice (addition, soustraction, multiplication, division, etc.) depuis un menu principal. 
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Une fois l'exercice sélectionné, une série de calculs est générée aléatoirement en fonction des paramètres définis. L'utilisateur doit résoudre les opérations proposées directement via l'interface. L'application évalue les réponses en temps réel pour offrir un retour immédiat et permettre un apprentissage autonome. 
 
-## Type Support for `.vue` Imports in TS
+L'ensemble est développé avec des technologies web modernes (Vue.js, Vite, Tailwind CSS) pour garantir une expérience fluide et réactive sur n'importe quel appareil (ordinateur, tablette ou smartphone).
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+---
+*Réalisé à l'aide de l'IA : Clause Opus 4.6*
